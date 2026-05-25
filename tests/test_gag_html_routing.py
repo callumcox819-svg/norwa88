@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from services.gag_keys import gag_service_for_html_dir
+from services.aqua_keys import aqua_service_for_html_dir as gag_service_for_html_dir
 from services.html_templates import (
     BACK_FILENAME,
     GO_FILENAME,

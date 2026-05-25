@@ -128,7 +128,7 @@ async def on_format(cb: CallbackQuery, state: FSMContext) -> None:
     html_hint = ""
     if is_html:
         html_hint = (
-            "\n\n📄 HTML: шаблон из <code>data/HTMLno/</code> по сервису GAG (Finn.no) "
+            "\n\n📄 HTML: шаблон из <code>data/HTMLno/</code> (Aqua / Finn.no) "
             "(ТУТТИ / ПОСТ / Ricardo).\n"
             "В поле «текст» укажите имя файла, например <code>confirmation.html</code> "
             "или <code>-</code> по умолчанию.\n"

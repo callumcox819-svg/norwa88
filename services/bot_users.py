@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
-from region import GAG_DEFAULT_SERVICE
+from region import AQUA_DEFAULT_SERVICE
+from services.aqua_keys import AQUA_SERVICE_KEY
+from services.aqua_user import migrate_legacy_gag_keys
 from services.db_backend import db_connect, is_postgres, now_sql
 from services.domain_list import ensure_norway_default_domains
-from services.gag_keys import GAG_SERVICE_KEY
 from services.user_settings import get_setting, set_setting
 
 
 async def _seed_norway_profile_defaults(user_id: int) -> None:
     await ensure_norway_default_domains(user_id)
-    if not (await get_setting(user_id, GAG_SERVICE_KEY) or "").strip():
-        await set_setting(user_id, GAG_SERVICE_KEY, GAG_DEFAULT_SERVICE)
+    await migrate_legacy_gag_keys(user_id)
+    if not (await get_setting(user_id, AQUA_SERVICE_KEY) or "").strip():
+        await set_setting(user_id, AQUA_SERVICE_KEY, AQUA_DEFAULT_SERVICE)
 
 
 async def ensure_bot_users_table() -> None:

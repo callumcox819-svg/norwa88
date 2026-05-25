@@ -12,5 +12,7 @@ VALIDEMAIL_API_KEY_5 = ""
 DEEPL_API_KEY = ""
 DATABASE_URL = ""
 
-# Опционально, если GAG выдаст другой код сервиса:
-# GAG_DEFAULT_SERVICE = "finn_no"
+# GOO Network / Aqua:
+# AQUA_GENERATE_DOMAIN = OLD
+# AQUA_DEFAULT_SERVICE = finn_no
+# GOO_API_BASE = https://api.goo.network

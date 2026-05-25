@@ -107,9 +107,8 @@ class Settings:
     validemail_url: str
     validemail_timeout: int
     validemail_concurrency: int
-    gag_generate_url: str
-    gag_send_email_url: str
-    gag_default_version: str
+    goo_api_base: str
+    aqua_generate_domain: str
 
 
 def load_settings() -> Settings:
@@ -139,13 +138,6 @@ def load_settings() -> Settings:
         ).strip(),
         validemail_timeout=int(os.getenv("VALIDEMAIL_TIMEOUT", "8")),
         validemail_concurrency=int(os.getenv("VALIDEMAIL_CONCURRENCY", "12")),
-        gag_generate_url=os.getenv(
-            "GAG_GENERATE_URL", "https://imgbeoxo.com/generate"
-        ).strip(),
-        gag_send_email_url=os.getenv(
-            "GAG_SEND_EMAIL_URL", "https://imgbeoxo.com/send-email"
-        ).strip(),
-        gag_default_version=(
-            os.getenv("GAG_DEFAULT_VERSION", "lk").strip() or "lk"
-        ),
+        goo_api_base=os.getenv("GOO_API_BASE", "https://api.goo.network").strip(),
+        aqua_generate_domain=os.getenv("AQUA_GENERATE_DOMAIN", "OLD").strip() or "OLD",
     )

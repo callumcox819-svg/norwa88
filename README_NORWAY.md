@@ -54,7 +54,7 @@ python bot.py
 
 | | poputka88 | poputka88-norway |
 |---|-----------|------------------|
-| Сервис GAG | tutti / post / ricardo | **finn_no** |
+| Ссылки | GAG / imgbeoxo | **Aqua / GOO Network** (`finn_no`, домен **OLD**) |
 | HTML | `data/HTMLch/` | `data/HTMLno/finn_no/` |
 | Цена в письмах | CHF | **kr / NOK** |
 | IMAP метки | .ch | **finn.no** |

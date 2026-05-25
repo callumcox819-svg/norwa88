@@ -7,8 +7,12 @@ import os
 BOT_DISPLAY_NAME = "Poputka88 Norway"
 MARKETPLACE_NAME = "Finn.no"
 
-# Код service в GAG API — переопредели в Variables, когда дашь точное значение
-GAG_DEFAULT_SERVICE = (os.getenv("GAG_DEFAULT_SERVICE", "finn_no") or "finn_no").strip()
+# Код service в GOO Network API (список сервисов: finn_no)
+AQUA_DEFAULT_SERVICE = (os.getenv("AQUA_DEFAULT_SERVICE", "finn_no") or "finn_no").strip()
+GAG_DEFAULT_SERVICE = AQUA_DEFAULT_SERVICE  # совместимость
+
+# Домен генерации ссылок (в Aqua — OLD)
+AQUA_GENERATE_DOMAIN = (os.getenv("AQUA_GENERATE_DOMAIN", "OLD") or "OLD").strip()
 
 HTML_DATA_DIR = "HTMLno"
 

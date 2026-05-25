@@ -1,13 +1,12 @@
-"""HTML-шаблоны по сервису GAG (Finn.no / data/HTMLno)."""
+"""HTML-шаблоны по сервису Aqua (Finn.no / data/HTMLno)."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 from region import HTML_DATA_DIR
+from services.aqua_keys import GAG_SERVICE_KEY, aqua_service_for_html_dir
 from services.gag_keys import (
-    GAG_SERVICE_KEY,
-    gag_service_for_html_dir,
     is_valid_gag_service,
     normalize_gag_service,
 )
@@ -22,7 +21,7 @@ BACK_FILENAME = "return.html"
 def html_subdir_for_service(service_code: str | None) -> str | None:
     if not is_valid_gag_service(service_code):
         return None
-    sub = gag_service_for_html_dir(service_code)
+    sub = aqua_service_for_html_dir(service_code)
     return sub or None
 
 
@@ -61,7 +60,7 @@ async def load_html_template_for_user(
     if not is_valid_gag_service(raw):
         return (
             "",
-            "Не выбран сервис GAG. Открой 🧾 Профиль → 🧭 Выбор сервиса (Finn.no).",
+            "Сервис не настроен. Открой 📋 Профиль → сохрани profileID (Finn.no / Aqua).",
         )
     sub = html_subdir_for_service(raw)
     p = html_template_path(raw, filename)
