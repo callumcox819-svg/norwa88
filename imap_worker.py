@@ -1,11 +1,11 @@
 """
 Отдельный процесс только для входящей почты (IMAP).
 
-Railway: второй сервис из того же репозитория poputka88:
+Railway: второй сервис из того же репозитория norwa88:
   python imap_worker.py
 
 Общее с ботом: DATABASE_URL, BOT_TOKEN (только send_message, без polling).
-На сервисе poputka88: IMAP_DEDICATED_WORKER=1 — IMAP не дублируется в bot.py.
+На сервисе norwa88 (бот): IMAP_DEDICATED_WORKER=1 — IMAP не дублируется в bot.py.
 """
 
 from __future__ import annotations
@@ -86,7 +86,7 @@ async def main() -> None:
             "<пустая строка> или <нет в процессе>. Удалите DATABASE_URL вручную → "
             "на схеме проекта соедините Postgres с imap-worker → "
             "Variables → Add Reference → Postgres.DATABASE_URL → Redeploy.\n"
-            "План Б (сразу письма в TG): на poputka88 уберите IMAP_DEDICATED_WORKER, "
+            "План Б (сразу письма в TG): на norwa88 уберите IMAP_DEDICATED_WORKER, "
             "добавьте ENABLE_INCOMING_MAIL=1, остановите imap-worker.",
             DB_PATH,
             database_env_diag(),
@@ -115,7 +115,7 @@ async def main() -> None:
         else:
             logger.critical(
                 "0 SMTP в этой БД. DATABASE_URL на imap-worker должен быть Reference "
-                "на тот же Postgres, что у poputka88 (сейчас другая/пустая база)."
+                "на тот же Postgres, что у norwa88 (сейчас другая/пустая база)."
             )
         sys.exit(1)
 

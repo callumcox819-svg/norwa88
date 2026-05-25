@@ -1,4 +1,4 @@
-Пошагово: отдельный IMAP-сервер на Railway (проект poputka88)
+Пошагово: отдельный IMAP-сервер на Railway (проект norwa88)
 =============================================================
 
 Зачем: бот отвечает на кнопки и шлёт SMTP-рассылку, IMAP крутится отдельно —
@@ -9,7 +9,7 @@
    [ Postgres ]
         ↑    ↑
         │    │
-   [ poputka88 ]     [ imap-worker ]
+   [ norwa88 ]     [ imap-worker ]
    python bot.py     python imap_worker.py
    Telegram          только IMAP → карточки в чат
    replicas = 1      replicas = 1
@@ -17,16 +17,16 @@
 ВАЖНО:
 • Оба сервиса — НЕ python bot.py (будет конфликт Telegram).
 • Второй сервис — ТОЛЬКО: python imap_worker.py
-• Один BOT_TOKEN на оба сервиса — нормально (polling только на poputka88).
+• Один BOT_TOKEN на оба сервиса — нормально (polling только на norwa88).
 
 
 ═══════════════════════════════════════════════════════════════
-ЧАСТЬ A — сервис poputka88 (основной бот)
+ЧАСТЬ A — сервис norwa88 (основной бот)
 ═══════════════════════════════════════════════════════════════
 
-1. Открой Railway → проект с Postgres и poputka88.
+1. Открой Railway → проект с Postgres и norwa88.
 
-2. Кликни сервис **poputka88** (GitHub, не Postgres).
+2. Кликни сервис **norwa88** (GitHub, не Postgres).
 
 3. Вкладка **Settings** → **Deploy**:
    • **Replicas** = **1** (не 2!)
@@ -39,7 +39,7 @@
 
    (это говорит боту: «IMAP не запускай, он на другом сервисе»)
 
-5. Убедись, что на poputka88 НЕТ переменной:
+5. Убедись, что на norwa88 НЕТ переменной:
    ENABLE_INCOMING_MAIL = 1
    Если есть — удали или поставь 0.
    (иначе IMAP запустится дважды: на боте и на воркере)
@@ -47,12 +47,12 @@
 6. Остальные переменные как были:
    BOT_TOKEN, DATABASE_URL (Reference на Postgres),
    ADMIN_IDS, VALIDEMAIL_API_KEY, …
-   DB_POOL_SIZE = 20          (на poputka88 и imap-worker, меньше connection_lost)
+   DB_POOL_SIZE = 20          (на norwa88 и imap-worker, меньше connection_lost)
    DB_POOL_MIN_SIZE = 2
 
-7. Нажми **Deploy** / **Redeploy** у poputka88.
+7. Нажми **Deploy** / **Redeploy** у norwa88.
 
-8. **Logs** poputka88 — должно быть примерно:
+8. **Logs** norwa88 — должно быть примерно:
    • Bot started
    • IMAP в bot.py отключён (IMAP_DEDICATED_WORKER=1)
    • Run polling for bot @workaemnaxyibot
@@ -65,7 +65,7 @@
 
 9. На схеме проекта (canvas) нажми **+ Create** → **GitHub Repo**.
 
-10. Выбери ТОТ ЖЕ репозиторий: callumcox819-svg/poputka88 (ветка main).
+10. Выбери ТОТ ЖЕ репозиторий: callumcox819-svg/norwa88 (ветка main).
 
 11. Railway создаст новый сервис. Переименуй:
     Settings → имя сервиса → **imap-worker**
@@ -76,7 +76,7 @@
 
 13. **Replicas** = **1**
 
-14. **Variables** — только на сервисе imap-worker (не poputka88):
+14. **Variables** — только на сервисе imap-worker (не norwa88):
 
     BOT_TOKEN              = (тот же, что у бота)
     ENABLE_INCOMING_MAIL   = 1
@@ -89,7 +89,7 @@
 
     В логах: DATABASE_URL=<ok>, pollable=69 (ваше число).
 
-    ПЛАН Б (письма сразу): poputka88 ENABLE_INCOMING_MAIL=1, убрать IMAP_DEDICATED_WORKER,
+    ПЛАН Б (письма сразу): norwa88 ENABLE_INCOMING_MAIL=1, убрать IMAP_DEDICATED_WORKER,
     imap-worker остановить — IMAP на основном боте.
 
     MAX_IMAP_CONCURRENT    = 12
@@ -121,7 +121,7 @@
     карточка должна прийти в чат (шлёт imap-worker).
 
 19. Запусти /send (рассылку) — бот не должен «зависать»;
-    в логах poputka88 нет долгих IMAP-строк во время рассылки.
+    в логах norwa88 нет долгих IMAP-строк во время рассылки.
 
 20. ⚙️ → Почтовые аккаунты → «📥 Проверить входящие» — ручной опрос
     (это по-прежнему из бота, разово).
@@ -135,7 +135,7 @@
   Решение: на imap-worker команда только python imap_worker.py
 
 • Дубли карточек — IMAP на боте И на воркере одновременно.
-  Решение: poputka88 → IMAP_DEDICATED_WORKER=1, без ENABLE_INCOMING_MAIL=1
+  Решение: norwa88 → IMAP_DEDICATED_WORKER=1, без ENABLE_INCOMING_MAIL=1
 
 • imap-worker replicas = 2 — двойной опрос ящиков.
   Решение: replicas = 1 на обоих сервисах
@@ -159,8 +159,8 @@
 -------
 
 [ ] Postgres Online
-[ ] poputka88: replicas=1, IMAP_DEDICATED_WORKER=1, без ENABLE_INCOMING_MAIL=1
+[ ] norwa88: replicas=1, IMAP_DEDICATED_WORKER=1, без ENABLE_INCOMING_MAIL=1
 [ ] imap-worker: python imap_worker.py, ENABLE_INCOMING_MAIL=1, replicas=1
 [ ] В логах imap-worker: 💓 IMAP worker alive
-[ ] В логах poputka88: IMAP отключён на боте
+[ ] В логах norwa88: IMAP отключён на боте
 [ ] Нет TelegramConflictError

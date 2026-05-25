@@ -16,7 +16,8 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import load_settings
 
-from database import init_db, list_imap_poll_accounts
+from database import count_imap_poll_accounts_raw, init_db, list_imap_poll_accounts
+from services.db_backend import DB_PATH, database_env_diag, is_postgres
 
 from handlers import setup_routers
 
@@ -163,6 +164,22 @@ async def main() -> None:
 
     await init_db()
     await seed_config_admins(settings.admin_ids)
+
+    logger.info("%s", database_env_diag())
+    if is_postgres():
+        stats = await count_imap_poll_accounts_raw()
+        logger.info(
+            "БД: PostgreSQL — данные (аккаунты, лиды, пресеты, прокси) сохраняются между деплоями. "
+            "SMTP: total=%s enabled=%s pollable=%s",
+            stats["total"],
+            stats["enabled"],
+            stats["pollable"],
+        )
+    else:
+        logger.warning(
+            "БД: SQLite (%s) — для Railway добавьте Postgres и Reference DATABASE_URL",
+            DB_PATH,
+        )
 
     bot = Bot(token=settings.bot_token)
 

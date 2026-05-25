@@ -40,13 +40,15 @@ python bot.py
 
 Изменить: **⚙️ Настройки → 📊 Приоритет отправки**.
 
-## Railway
+## Railway (как poputka88)
 
-Отдельный проект / сервис от poputka88 CH:
+**Пошагово:** `RAILWAY_NORWA88.txt`
 
-- свой `BOT_TOKEN`
-- свой PostgreSQL (`DATABASE_URL`)
-- те же переменные IMAP, что в `RAILWAY_IMAP_WORKER.txt`, при необходимости
+1. **PostgreSQL** в проекте + `DATABASE_URL` = Reference на оба сервиса.
+2. **norwa88** — `python bot.py`, `IMAP_DEDICATED_WORKER=1`.
+3. **imap-worker** — `python imap_worker.py`, `ENABLE_INCOMING_MAIL=1`, тот же Postgres и `BOT_TOKEN`.
+
+Без Postgres данные живут только в SQLite внутри контейнера и **сбрасываются при деплое**.
 
 ## Отличия от poputka88 (CH)
 
