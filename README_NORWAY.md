@@ -14,10 +14,8 @@
    cd C:\Users\user\Desktop\poputka88-norway
    .venv\Scripts\python scripts\set_commands.py
    ```
-5. **GAG API** — если код сервиса в API не `finn_no`, задай на Railway / в `.env`:
-   ```
-   GAG_DEFAULT_SERVICE=твой_код_из_gag
-   ```
+5. **Aqua / GOO API** — User key + Team key + **profileID** из панели Aqua (зелёный токен в профиле).
+   Домен генерации по умолчанию: `OLD` (`AQUA_GENERATE_DOMAIN=OLD`).
 
 ## Быстрый старт (локально)
 

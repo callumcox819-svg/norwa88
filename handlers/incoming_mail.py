@@ -668,7 +668,7 @@ async def cb_lead_price(callback: CallbackQuery, state: FSMContext) -> None:
         "💶 <b>Цена</b>\n\n"
         f"Текущая: <code>{e(current)}</code>\n\n"
         "Отправьте новую цену (например <code>500</code> или <code>65.00 CHF</code>).\n"
-        "GAG-ссылка пересоздастся и обновится в карточке.\n\n"
+        "Aqua-ссылка пересоздастся и обновится в карточке.\n\n"
         "«-» — отмена.",
         parse_mode="HTML",
     )
@@ -775,7 +775,7 @@ async def lead_price_set(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(
         f"✅ Цена обновлена: <code>{e(text)}</code>\n"
-        "GAG-ссылка пересоздана — в HTML будет эта цена.",
+        "Aqua-ссылка пересоздана — в HTML будет эта цена.",
         parse_mode="HTML",
         reply_to_message_id=int(anchor) if anchor else None,
     )

@@ -273,7 +273,7 @@ async def spoof_name_menu(callback: CallbackQuery, state: FSMContext) -> None:
             "• <b>Subject</b> — только «Установить тему»\n"
             "Тема входящего и имя из «добавления почты» <b>не</b> используются.\n"
             f"Для обычной рассылки (не HTML) From: <i>{e(mailing_from)}</i>\n"
-            "HTML — только через прокси, с GAG-ссылкой в <code>{{LINK}}</code>.\n"
+            "HTML — только через прокси, с Aqua-ссылкой в <code>{{LINK}}</code>.\n"
         ),
         reply_markup=kb,
     )
