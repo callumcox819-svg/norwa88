@@ -75,35 +75,34 @@ async def load_aqua_profile(user_id: int, *, username: str = "", telegram_id: in
 
 
 def profile_ready(profile: AquaProfile) -> bool:
-    return bool(
-        profile.profile_id
-        and profile.title
-        and profile.name
-        and profile.address
-        and profile.user_key_set
-        and profile.team_key_set
-    )
+    return bool(profile.profile_id and profile.user_key_set and profile.team_key_set)
 
 
 def format_aqua_profile_message(profile: AquaProfile) -> str:
     from utils.text_html import e
 
-    pid = profile.profile_id or "—"
+    pid = (profile.profile_id or "").strip()
+    pid_hdr = (
+        f"🟢 <code>{e(pid)}</code>" if pid else "<code>—</code> (укажите profileID из Aqua)"
+    )
     un = profile.username or "—"
     if un and not un.startswith("@"):
         un = f"@{un}"
+    user_key = "🟢 задан" if profile.user_key_set else "🔴 не задан"
     lines = [
-        f"🇳🇴 <b>Норвегия</b> › <b>Профиль</b> (<code>{e(pid)}</code>) ⌄",
+        f"🇳🇴 <b>Норвегия</b> › <b>Профиль</b> {pid_hdr} ⌄",
         "",
         f"Username: <code>{e(un)}</code>",
         f"User ID: <code>{profile.telegram_id}</code>",
-        f"Псевдоним: <code>{e(profile.pseudonym or '—')}</code>",
+        f"🔑 User API (генерация): <b>{user_key}</b>",
         "",
+        f"Псевдоним: <code>{e(profile.pseudonym or '—')}</code>",
         f"🏷 Название: <code>{e(profile.title or '—')}</code>",
         f"🏷 ФИО: <code>{e(profile.name or '—')}</code>",
         f"🏷 Адрес: <code>{e(profile.address or '—')}</code>",
         "",
-        "ℹ️ Редактирование и удаление профиля:",
+        "ℹ️ Укажите <b>profileID</b> из Aqua и личный <b>User API key</b>. "
+        "Team key — только на сервере (Railway).",
     ]
     return "\n".join(lines)
 
@@ -184,19 +183,17 @@ async def generate_link_for_user(
     team_key = await get_team_aqua_api_key(user_id)
     if not user_key:
         raise AquaNotConfiguredError(
-            "Не задан User API key (📋 Профиль → 🔑 Ключи или ⚙️ Настройки)."
+            "Не задан User API key (⚙️ Настройки → 📋 Профиль → 🔑 User API key)."
         )
     if not team_key:
-        raise AquaNotConfiguredError("Не задан Team API key (X-Team-Key).")
+        raise AquaNotConfiguredError(
+            "Не задан Team API key на сервере. Админ: переменная AQUA_TEAM_API_KEY в Railway."
+        )
 
     profile = await load_aqua_profile(user_id, telegram_id=user_id)
     if not profile.profile_id:
         raise AquaNotConfiguredError(
-            "Не указан profileID из Aqua (📋 Профиль → 🆔 ID профиля)."
-        )
-    if not (profile.title and profile.name and profile.address):
-        raise AquaNotConfiguredError(
-            "Профиль не заполнен: название, ФИО и адрес (📋 Профиль → ✏️ Изменить)."
+            "Не указан profileID из Aqua (⚙️ Настройки → 📋 Профиль → 🆔 profileID)."
         )
 
     service = normalize_aqua_service(profile.service)
@@ -204,6 +201,13 @@ async def generate_link_for_user(
         service = AQUA_DEFAULT_SERVICE
 
     listing = (offer_link or "").strip()
+    if not listing.startswith("http") and not (
+        profile.title and profile.name and profile.address
+    ):
+        raise AquaNotConfiguredError(
+            "Для генерации без ссылки на объявление заполните название, ФИО и адрес "
+            "(⚙️ Настройки → 📋 Профиль → ✏️ Название / ФИО / адрес)."
+        )
     try:
         if listing.startswith("http"):
             return await generate_link_with_parse(

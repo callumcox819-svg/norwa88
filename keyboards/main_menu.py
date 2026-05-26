@@ -13,8 +13,9 @@ MAIN_MENU_TEXTS: frozenset[str] = frozenset(
         "/stop",
         "/stopsend",
         "📊 Статус рассылки",
-        "🧪 Тест маил",
         "📋 Профиль",
+        "Профиль",
+        "🧪 Тест маил",
         "👑 Админ-панель",
         "🔥 Админ-панель",
         "/admin",
@@ -27,8 +28,6 @@ BTN_START_MAIL = "▶️ Запустить рассылку"
 BTN_STOP_MAIL = "⏹ Остановить рассылку"
 BTN_STATUS = "📊 Статус рассылки"
 BTN_TEST_MAIL = "🧪 Тест маил"
-BTN_PROFILE = "📋 Профиль"
-
 # Для FSM: не перехватывать как ввод
 MENU_BUTTONS = MAIN_MENU_TEXTS
 
@@ -49,7 +48,7 @@ async def main_menu_kb_for(telegram_id: int) -> ReplyKeyboardMarkup:
 
 def main_keyboard(*, show_admin: bool = False) -> ReplyKeyboardMarkup:
     rows = [
-        [KeyboardButton(text=BTN_SETTINGS), KeyboardButton(text=BTN_PROFILE)],
+        [KeyboardButton(text=BTN_SETTINGS)],
         [KeyboardButton(text=BTN_QUICK_ADD)],
         [
             KeyboardButton(text=BTN_START_MAIL),

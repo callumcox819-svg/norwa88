@@ -45,10 +45,9 @@ def settings_menu_kb(flags: dict[str, bool]) -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(text="🧮 Интервал", callback_data="settings_timings"),
-                InlineKeyboardButton(text="🔑 Ключи Aqua", callback_data="aqua_show:keys"),
+                InlineKeyboardButton(text="📋 Профиль", callback_data="aqua_show:profile"),
             ],
             [
-                InlineKeyboardButton(text="📋 Профиль", callback_data="aqua_show:profile"),
                 InlineKeyboardButton(text="🍀 Скрыть", callback_data="ref_hide"),
             ],
         ]

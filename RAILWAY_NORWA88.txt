@@ -50,7 +50,10 @@ Variables (обязательно):
    ENABLE_INCOMING_MAIL = 1   ← иначе IMAP дублируется в bot.py
 
 Опционально:
-   VALIDEMAIL_API_KEY, DEEPL_API_KEY, GAG_DEFAULT_SERVICE=finn_no
+   VALIDEMAIL_API_KEY, DEEPL_API_KEY
+   AQUA_TEAM_API_KEY = Team key GOO (X-Team-Key) — один на весь бот, не в Telegram
+   AQUA_GENERATE_DOMAIN = OLD
+   AQUA_DEFAULT_SERVICE = finn_no
 
 
 ═══════════════════════════════════════════════════════════════

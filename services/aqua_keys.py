@@ -61,7 +61,23 @@ async def get_user_aqua_api_key(user_id: int) -> str:
     return (await get_setting(user_id, _LEGACY_GAG_API_KEY) or "").strip()
 
 
+def global_team_aqua_api_key() -> str:
+    """Team key задаётся один раз на Railway (AQUA_TEAM_API_KEY), не у пользователей."""
+    v = (os.getenv("AQUA_TEAM_API_KEY") or os.getenv("TEAM_API_KEY") or "").strip()
+    if v:
+        return v
+    try:
+        import config
+
+        return (getattr(config, "AQUA_TEAM_API_KEY", "") or "").strip()
+    except Exception:
+        return ""
+
+
 async def get_team_aqua_api_key(user_id: int) -> str:
+    g = global_team_aqua_api_key()
+    if g:
+        return g
     return (await get_setting(user_id, AQUA_TEAM_API_KEY) or "").strip()
 
 

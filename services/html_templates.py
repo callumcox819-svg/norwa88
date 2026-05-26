@@ -60,7 +60,7 @@ async def load_html_template_for_user(
     if not is_valid_gag_service(raw):
         return (
             "",
-            "Сервис не настроен. Открой 📋 Профиль → сохрани profileID (Finn.no / Aqua).",
+            "Сервис не настроен. Открой ⚙️ Настройки → 📋 Профиль → 🆔 profileID.",
         )
     sub = html_subdir_for_service(raw)
     p = html_template_path(raw, filename)
