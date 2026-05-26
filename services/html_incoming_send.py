@@ -81,8 +81,8 @@ async def build_incoming_html_body(
 
     raw_svc = (await get_setting(user_id, GAG_SERVICE_KEY) or "").strip()
     if not is_valid_gag_service(raw_svc):
-        return None, "Выберите сервис в 👤 Профиль → 🧭 Выбор сервиса", IncomingHtmlSendResult(
-            ok=False, error="Выберите сервис в 👤 Профиль → 🧭 Выбор сервиса"
+        return None, "Сервис Finn.no не настроен (⚙️ → 📋 Профиль → profileID).", IncomingHtmlSendResult(
+            ok=False, error="Сервис Finn.no не настроен."
         )
 
     raw_html, err = await load_html_template_for_user(user_id, filename)

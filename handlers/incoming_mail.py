@@ -120,7 +120,7 @@ def _kb_html_pick(mail_id: int) -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="🔙 BACK", callback_data=f"mail_reply_html:back:{mail_id}"
+                    text="📧 BACK (HTML)", callback_data=f"mail_reply_html:back:{mail_id}"
                 )
             ],
             [
