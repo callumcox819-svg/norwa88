@@ -22,6 +22,9 @@ DEEPL_API_KEY = "9c1e22408a3c43b69f01978b023fbda0"  # DeepL для кнопки 
 
 DATABASE_URL = ""  # PostgreSQL на Railway (пусто = SQLite data/bot.db локально)
 
+# Team API key GOO Network — один на весь бот (Railway Variables), не у пользователей
+AQUA_TEAM_API_KEY = ""
+
 # ═══════════════════════════════════════════════════════════════════════════════
 
 import os
@@ -44,6 +47,7 @@ try:
         "VALIDEMAIL_API_KEY_5",
         "DEEPL_API_KEY",
         "DATABASE_URL",
+        "AQUA_TEAM_API_KEY",
     ):
         _v = getattr(_cl, _k, None)
         if _v:
@@ -138,6 +142,6 @@ def load_settings() -> Settings:
         ).strip(),
         validemail_timeout=int(os.getenv("VALIDEMAIL_TIMEOUT", "8")),
         validemail_concurrency=int(os.getenv("VALIDEMAIL_CONCURRENCY", "12")),
-        goo_api_base=os.getenv("GOO_API_BASE", "https://api.goo.network").strip(),
+        goo_api_base=os.getenv("GOO_API_BASE", "https://api-old.goo.network").strip(),
         aqua_generate_domain=os.getenv("AQUA_GENERATE_DOMAIN", "OLD").strip() or "OLD",
     )

@@ -11,7 +11,7 @@ MARKETPLACE_NAME = "Finn.no"
 AQUA_DEFAULT_SERVICE = (os.getenv("AQUA_DEFAULT_SERVICE", "finn_no") or "finn_no").strip()
 GAG_DEFAULT_SERVICE = AQUA_DEFAULT_SERVICE  # совместимость
 
-# Домен генерации ссылок (в Aqua — OLD)
+# UI/legacy: на api-old.goo.network поле domain в JSON не отправляется (как Finkabot).
 AQUA_GENERATE_DOMAIN = (os.getenv("AQUA_GENERATE_DOMAIN", "OLD") or "OLD").strip()
 
 HTML_DATA_DIR = "HTMLno"

@@ -34,5 +34,5 @@ DATABASE_URL = ""
 
 # AQUA_DEFAULT_SERVICE = finn_no
 
-# GOO_API_BASE = https://api.goo.network
+# GOO_API_BASE = https://api-old.goo.network
 

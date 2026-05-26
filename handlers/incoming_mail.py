@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from aiogram import F, Router
@@ -44,6 +45,18 @@ from utils.bg_jobs import is_running as bg_is_running, start as bg_start
 from utils.text_html import e
 
 logger = logging.getLogger(__name__)
+
+
+def _format_aqua_link_error(err: BaseException) -> str:
+    msg = str(err).strip()
+    low = msg.lower()
+    if "invalid credentials" in low or "http 401" in low or "http 403" in low:
+        return msg
+    if "connection_lost" in low or "server disconnected" in low:
+        return "сеть оборвалась — нажми «Создать ссылку» ещё раз"
+    if isinstance(err, asyncio.TimeoutError) or "timeout" in low:
+        return "таймаут Aqua API — попробуй через несколько секунд"
+    return msg or err.__class__.__name__
 router = Router()
 
 REPLY_CHOICE_TEXT = (
@@ -587,12 +600,14 @@ async def cb_goo_mail(callback: CallbackQuery) -> None:
             return
         except Exception as exc:
             logger.exception("goo_mail mail_id=%s", mail_id)
+            err_text = _format_aqua_link_error(exc)
             await save_incoming_gag_link(
-                mail_id, uid, url="", error=str(exc)[:400]
+                mail_id, uid, url="", error=err_text[:400]
             )
             await bot.send_message(
                 msg.chat.id,
-                f"❌ Ошибка: {str(exc)[:400]}",
+                f"❌ {err_text[:900]}",
+                parse_mode="HTML",
                 reply_to_message_id=msg.message_id,
             )
             return
