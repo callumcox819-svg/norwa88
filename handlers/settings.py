@@ -253,7 +253,11 @@ async def spoof_name_menu(callback: CallbackQuery, state: FSMContext) -> None:
     mailing_from = await get_mailing_sender_display(uid) or "—"
     kb = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="✅ Установить имя", callback_data="spoof_name_set")],
+            [
+                InlineKeyboardButton(
+                    text="✅ Имя для HTML (From)", callback_data="spoof_name_set"
+                )
+            ],
             [
                 InlineKeyboardButton(
                     text="✅ Установить тему", callback_data="spoof_subject_set"
@@ -285,7 +289,11 @@ async def spoof_name_set(callback: CallbackQuery, state: FSMContext) -> None:
     await state.set_state(SettingsInput.spoof_name)
     await cq_edit_text(
         callback,
-        "Введите имя и фамилию для отправки (например <code>Maria Johansen</code>):",
+        "📧 <b>Только для HTML-писем</b> (GO / BACK / HTML-рассылка)\n\n"
+        "Имя в поле <b>From</b> и в <code>{{NICK}}</code> в шаблоне.\n"
+        "Обычная рассылка и текстовые ответы — имя из <b>⚡ Быстрое добавление</b>.\n\n"
+        "Введите имя и фамилию (минимум 2 слова), например:\n"
+        "<code>Maria Johansen</code>",
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text="🚫 Отмена", callback_data="spoof_name_menu")]
@@ -299,10 +307,16 @@ async def spoof_name_set(callback: CallbackQuery, state: FSMContext) -> None:
 async def spoof_name_save(message: Message, state: FSMContext) -> None:
     name = (message.text or "").strip()
     if len(name.split()) < 2:
-        return await message.answer("Минимум 2 слова (имя и фамилия).")
+        return await message.answer(
+            "Минимум 2 слова (имя и фамилия) — только для HTML From."
+        )
     await set_setting(message.from_user.id, SPOOF_FROM_NAME_KEY, name)
     await state.clear()
-    await message.answer(f"✅ Имя сохранено: <b>{e(name)}</b>", parse_mode="HTML")
+    await message.answer(
+        f"✅ Имя для HTML сохранено: <b>{e(name)}</b>\n"
+        "<i>Рассылка без HTML — как при добавлении почты.</i>",
+        parse_mode="HTML",
+    )
     kb = await settings_kb_for(message.from_user.id)
     await message.answer(f"⚙️ <b>{SETTINGS_MENU_TEXT}</b>", reply_markup=kb, parse_mode="HTML")
 

@@ -33,7 +33,8 @@ async def get_mandatory_spoof_name(user_id: int) -> str:
     name = await _resolve_spoof_from_name(user_id)
     if not name:
         raise HtmlOutboundError(
-            "Для HTML задайте имя в ⚙️ Настройки → 👤 Имя для спуфинга (минимум 2 слова)."
+            "Для HTML задайте From в ⚙️ → 👤 Имя для спуфинга → "
+            "«Имя для HTML» (имя и фамилия, минимум 2 слова)."
         )
     return name
 
