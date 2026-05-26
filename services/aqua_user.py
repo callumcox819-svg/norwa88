@@ -82,22 +82,28 @@ def format_aqua_profile_message(profile: AquaProfile) -> str:
     from utils.text_html import e
 
     pid = (profile.profile_id or "").strip()
-    pid_hdr = (
-        f"🟢 <code>{e(pid)}</code>" if pid else "<code>—</code> (укажите profileID из Aqua)"
-    )
+    pid_set = bool(pid)
+    pid_status = "🟢 задан" if pid_set else "🔴 не задан"
     un = profile.username or "—"
     if un and not un.startswith("@"):
         un = f"@{un}"
     user_key = "🟢 задан" if profile.user_key_set else "🔴 не задан"
     lines = [
-        f"🇳🇴 <b>Норвегия</b> › <b>Профиль</b> {pid_hdr} ⌄",
+        "🇳🇴 <b>Норвегия</b> › <b>Профиль</b> ⌄",
         "",
         f"Username: <code>{e(un)}</code>",
         f"User ID: <code>{profile.telegram_id}</code>",
+        f"🆔 profileID: <b>{pid_status}</b>",
         f"🔑 User API: <b>{user_key}</b>",
-        "",
-        "Для генерации ссылок: <b>profileID</b> + <b>User API key</b>.",
     ]
+    if pid_set:
+        lines.append(f"   <code>{e(pid)}</code>")
+    lines.extend(
+        [
+            "",
+            "Для генерации ссылок: <b>profileID</b> + <b>User API key</b>.",
+        ]
+    )
     return "\n".join(lines)
 
 
