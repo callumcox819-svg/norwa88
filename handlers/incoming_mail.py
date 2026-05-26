@@ -629,7 +629,7 @@ async def cb_goo_mail(callback: CallbackQuery) -> None:
             offer_title=(mail2.get("product_title") or "").strip(),
             offer_price=(mail2.get("offer_price") or "").strip(),
             photo_url=(mail2.get("photo_url") or "").strip(),
-            profile_title=(mail2.get("product_title") or "").strip() or profile.profile_id,
+            profile_title=profile.profile_id,
             service_label=(mail2.get("service_label") or "").strip(),
             item_link=item_link,
             link=link,
@@ -753,7 +753,7 @@ async def lead_price_set(message: Message, state: FSMContext) -> None:
     cap = build_link_card_caption(
         offer_title=fields["item_title"] or (lead.get("item_title") or ""),
         offer_price=text,
-        profile_title=fields["item_title"] or (lead.get("item_title") or "") or profile.profile_id,
+        profile_title=profile.profile_id,
         service_label=svc,
         item_link=fields["item_link"] or (lead.get("item_link") or ""),
         gag_link=new_link,
