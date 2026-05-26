@@ -22,7 +22,7 @@ from aiogram.enums import ParseMode
 from config import load_settings
 from database import count_imap_poll_accounts_raw, init_db, list_imap_poll_accounts
 from services.bot_users import seed_config_admins
-from services.db_backend import DB_PATH, database_env_diag, is_postgres
+from services.db_backend import DB_PATH, database_env_diag, is_postgres, pg_connection_label
 from services.incoming_worker import POLL_SEC, start_incoming_mail_worker
 
 logger = logging.getLogger(__name__)
@@ -30,6 +30,53 @@ logger = logging.getLogger(__name__)
 
 def _truthy(name: str) -> bool:
     return (os.getenv(name) or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+async def _log_smtp_stats() -> dict:
+    stats = await count_imap_poll_accounts_raw()
+    logger.info(
+        "IMAP DB (%s): smtp total=%s enabled=%s with_password=%s pollable=%s",
+        pg_connection_label(),
+        stats["total"],
+        stats["enabled"],
+        stats["with_password"],
+        stats["pollable"],
+    )
+    return stats
+
+
+async def _wait_until_pollable() -> dict:
+    """Не падать на пустой БД — ждать, пока ящики добавят в боте."""
+    interval = max(15, int(os.getenv("IMAP_EMPTY_DB_RETRY_SEC", "30")))
+    max_wait = int(os.getenv("IMAP_EMPTY_DB_MAX_WAIT_SEC", "0"))  # 0 = ждать бесконечно
+    elapsed = 0
+    while True:
+        stats = await _log_smtp_stats()
+        if stats["pollable"] > 0:
+            return stats
+        if stats["enabled"] > 0:
+            logger.warning(
+                "0 ящиков для IMAP при %s enabled SMTP — нет пароля или IMAP host. "
+                "Проверьте ⚡ Быстрое добавление в боте. Повтор через %ss.",
+                stats["enabled"],
+                interval,
+            )
+        else:
+            logger.warning(
+                "Postgres подключён (%s), но SMTP-ящиков пока 0 — это не ошибка DATABASE_URL. "
+                "Добавьте почту в norwa88: ⚡ Быстрое добавление. Повтор через %ss.",
+                pg_connection_label(),
+                interval,
+            )
+        if max_wait > 0 and elapsed >= max_wait:
+            logger.critical(
+                "За %ss так и не появилось pollable>0. Если в логах norwa88 pollable>0, "
+                "а здесь 0 — разные БД: на обоих сервисах Reference → один Postgres.DATABASE_URL.",
+                max_wait,
+            )
+            sys.exit(1)
+        await asyncio.sleep(interval)
+        elapsed += interval
 
 
 async def _worker_heartbeat() -> None:
@@ -97,27 +144,17 @@ async def main() -> None:
     await init_db()
     await seed_config_admins(settings.admin_ids)
 
-    stats = await count_imap_poll_accounts_raw()
-    logger.info(
-        "IMAP DB (Postgres): smtp total=%s enabled=%s with_password=%s pollable=%s",
-        stats["total"],
-        stats["enabled"],
-        stats["with_password"],
-        stats["pollable"],
-    )
-    if stats["pollable"] == 0:
-        if stats["enabled"] > 0:
+    if os.getenv("IMAP_EXIT_IF_NO_MAILBOXES", "").strip().lower() in {"1", "true", "yes"}:
+        stats = await _log_smtp_stats()
+        if stats["pollable"] == 0:
             logger.critical(
-                "0 ящиков для опроса при %s enabled SMTP — нет паролей или IMAP host. "
-                "Проверьте ⚡ Быстрое добавление на основном боте.",
-                stats["enabled"],
+                "IMAP_EXIT_IF_NO_MAILBOXES=1 и pollable=0 — выход. "
+                "Уберите переменную или добавьте ящики в боте."
             )
-        else:
-            logger.critical(
-                "0 SMTP в этой БД. DATABASE_URL на imap-worker должен быть Reference "
-                "на тот же Postgres, что у norwa88 (сейчас другая/пустая база)."
-            )
-        sys.exit(1)
+            sys.exit(1)
+    else:
+        stats = await _wait_until_pollable()
+    logger.info("Готово к опросу: pollable=%s", stats["pollable"])
 
     os.environ.setdefault("MAX_IMAP_CONCURRENT", "12")
 

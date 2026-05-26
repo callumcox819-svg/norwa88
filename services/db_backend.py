@@ -91,6 +91,22 @@ def _env_key_status(name: str) -> str:
     return f"{name}=<ok>"
 
 
+def pg_connection_label() -> str:
+    """host/database без пароля — чтобы сравнить norwa88 и imap-worker в логах."""
+    url = _database_url()
+    if not url:
+        return "?"
+    try:
+        from urllib.parse import urlparse
+
+        p = urlparse(url)
+        host = (p.hostname or "?").strip()
+        db = ((p.path or "/").lstrip("/") or "?").strip()
+        return f"{host}/{db}"
+    except Exception:
+        return "?"
+
+
 def database_env_diag() -> str:
     """Для логов: статус переменных (без значений)."""
     keys = (
