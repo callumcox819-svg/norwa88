@@ -94,15 +94,9 @@ def format_aqua_profile_message(profile: AquaProfile) -> str:
         "",
         f"Username: <code>{e(un)}</code>",
         f"User ID: <code>{profile.telegram_id}</code>",
-        f"🔑 User API (генерация): <b>{user_key}</b>",
+        f"🔑 User API: <b>{user_key}</b>",
         "",
-        f"Псевдоним: <code>{e(profile.pseudonym or '—')}</code>",
-        f"🏷 Название: <code>{e(profile.title or '—')}</code>",
-        f"🏷 ФИО: <code>{e(profile.name or '—')}</code>",
-        f"🏷 Адрес: <code>{e(profile.address or '—')}</code>",
-        "",
-        "ℹ️ Укажите <b>profileID</b> из Aqua и личный <b>User API key</b>. "
-        "Team key — только на сервере (Railway).",
+        "Для генерации ссылок: <b>profileID</b> + <b>User API key</b>.",
     ]
     return "\n".join(lines)
 
@@ -201,12 +195,9 @@ async def generate_link_for_user(
         service = AQUA_DEFAULT_SERVICE
 
     listing = (offer_link or "").strip()
-    if not listing.startswith("http") and not (
-        profile.title and profile.name and profile.address
-    ):
+    if not listing.startswith("http") and not (title or "").strip():
         raise AquaNotConfiguredError(
-            "Для генерации без ссылки на объявление заполните название, ФИО и адрес "
-            "(⚙️ Настройки → 📋 Профиль → ✏️ Название / ФИО / адрес)."
+            "Нет ссылки на объявление и названия товара для генерации."
         )
     try:
         if listing.startswith("http"):
